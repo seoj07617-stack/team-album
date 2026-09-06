@@ -146,27 +146,45 @@ function unlock(){
 $("#btn-enter").addEventListener("click",enter);
 $("#pwd").addEventListener("keydown",e=>{if(e.key==="Enter")enter()});
 
-/* ---- 相册加载 ---- */
+/* ---- 相册加载：优先GitHub API自动发现，失败时回退到manifest清单 ---- */
+function getJSON(url,timeout){
+  return new Promise((res,rej)=>{
+    const c=("AbortController"in window)?new AbortController():null;
+    const t=setTimeout(()=>{if(c)c.abort();rej(new Error("timeout"))},timeout||8000);
+    fetch(url,{headers:{Accept:"application/vnd.github+json"},signal:c?c.signal:undefined})
+      .then(r=>{if(!r.ok)throw new Error(r.status);return r.json()})
+      .then(j=>{clearTimeout(t);res(j)})
+      .catch(e=>{clearTimeout(t);rej(e)});
+  });
+}
+async function fromAPI(){
+  const dirs=(await getJSON("https://api.github.com/repos/"+OWNER+"/"+REPO+"/contents/uploads")).filter(d=>d.type==="dir");
+  const albums=[];
+  for(const d of dirs){
+    try{
+      const fs=(await getJSON("https://api.github.com/repos/"+OWNER+"/"+REPO+"/contents/uploads/"+encodeURIComponent(d.name))).filter(f=>f.type==="file"&&IMG_RE.test(f.name));
+      if(fs.length)albums.push({name:d.name,files:fs});
+    }catch(e){}
+  }
+  return albums;
+}
+async function fromManifest(){
+  const m=await getJSON(SITE+"manifest.json?t="+Date.now());
+  return (m.albums||[]).map(a=>({name:a.name,files:(a.files||[]).filter(n=>IMG_RE.test(n)).map(n=>({name:n}))})).filter(a=>a.files.length);
+}
 async function load(){
   albumsBox.innerHTML='<div class="state"><div class="spinner"></div>正在加载相册…</div>';
-  try{
-    const r=await fetch("https://api.github.com/repos/"+OWNER+"/"+REPO+"/contents/uploads",{headers:{Accept:"application/vnd.github+json"}});
-    if(!r.ok)throw new Error(r.status);
-    const dirs=(await r.json()).filter(d=>d.type==="dir");
-    const albums=[];
-    for(const d of dirs){
-      const rr=await fetch("https://api.github.com/repos/"+OWNER+"/"+REPO+"/contents/uploads/"+encodeURIComponent(d.name),{headers:{Accept:"application/vnd.github+json"}});
-      if(!rr.ok)continue;
-      const fs=(await rr.json()).filter(f=>f.type==="file"&&IMG_RE.test(f.name));
-      if(fs.length)albums.push({name:d.name,files:fs});
-    }
-    render(albums);
-  }catch(e){
+  let albums=null;
+  try{albums=await fromAPI()}catch(e){}
+  if(albums===null){try{albums=await fromManifest()}catch(e){}}
+  if(albums===null){
     albumsBox.innerHTML='<div class="state">'
       +'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v5"/><circle cx="12" cy="16.5" r=".6" fill="currentColor"/></svg>'
       +'相册加载失败，请检查网络后重试<button id="btn-retry">重新加载</button></div>';
     $("#btn-retry").addEventListener("click",load);
+    return;
   }
+  render(albums);
 }
 function esc(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function render(albums){
