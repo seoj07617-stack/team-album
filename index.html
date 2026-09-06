@@ -3,67 +3,96 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
-<meta name="theme-color" content="#17694a">
+<meta name="theme-color" content="#ffffff">
 <title>球队相册</title>
 <style>
+:root{
+  --bg:#f7f7f8; --card:#ffffff; --line:#eff3f4;
+  --ink:#0f1419; --sub:#536471;
+  --purple:#5b5bd6; --purple-glow:rgba(91,91,214,0.08);
+  --emerald:#059669; --amber:#d97706; --blue:#2563eb;
+  --radius:12px; --radius-xs:8px;
+  --ease:cubic-bezier(.4,0,.2,1);
+}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{background:#f3f6f4;color:#24312a;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;min-height:100vh}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Helvetica Neue','PingFang SC',sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh}
 button{font-family:inherit}
-/* ---- 访问密码门 ---- */
-#gate{position:fixed;inset:0;background:linear-gradient(160deg,#1a7a4a,#0d4d34);display:flex;align-items:center;justify-content:center;z-index:50;padding:24px}
-.gate-card{background:#fff;border-radius:18px;padding:34px 26px;width:100%;max-width:340px;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,.25)}
-.gate-ico{width:64px;height:64px;margin:0 auto 14px;border-radius:50%;background:#e8f4ee;display:flex;align-items:center;justify-content:center}
-.gate-card h1{font-size:20px;color:#17694a;margin-bottom:4px}
-.gate-card p{font-size:13px;color:#8a968f;margin-bottom:20px}
-#pwd{width:100%;height:46px;border:1.5px solid #d5ded9;border-radius:12px;padding:0 14px;font-size:16px;outline:none;text-align:center;letter-spacing:2px}
-#pwd:focus{border-color:#1a7a4a}
-#btn-enter{width:100%;height:46px;border:none;border-radius:12px;background:#1a7a4a;color:#fff;font-size:16px;margin-top:14px;cursor:pointer}
-#btn-enter:active{background:#0f5c37}
-#gate-err{font-size:12px;color:#d0452f;margin-top:12px;min-height:16px}
-/* ---- 相册主体 ---- */
-#app{max-width:640px;margin:0 auto;padding-bottom:40px}
-header{background:linear-gradient(160deg,#1a7a4a,#0d4d34);padding:26px 18px 20px;color:#fff}
-header h1{font-size:22px;font-weight:700}
-header .sub{font-size:13px;opacity:.85;margin-top:4px}
-header .note{display:inline-flex;align-items:center;gap:5px;font-size:11px;background:rgba(255,255,255,.14);border-radius:20px;padding:4px 10px;margin-top:12px}
-.album-card{background:#fff;border-radius:14px;margin:14px 12px 0;overflow:hidden;box-shadow:0 2px 10px rgba(20,60,40,.05)}
-.album-head{display:flex;align-items:center;gap:8px;padding:12px 14px 8px}
-.album-head .bar{width:4px;height:16px;border-radius:2px;background:#1a7a4a;flex:none}
-.album-head .name{font-size:15px;font-weight:600}
-.album-head .cnt{font-size:12px;color:#8a968f;margin-left:auto}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:6px 8px 10px}
-.ph{position:relative;aspect-ratio:1/1;overflow:hidden;border-radius:8px;background:#eef2ef;cursor:pointer}
+/* ---- 顶栏（同工作台 mobile-header）---- */
+#topbar{position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;z-index:40;height:52px;background:rgba(255,255,255,0.97);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 16px;gap:10px}
+#topbar .logo{width:26px;height:26px;border-radius:8px;background:var(--purple-glow);display:flex;align-items:center;justify-content:center;color:var(--purple);flex:none}
+#topbar .t{font-size:16px;font-weight:700;letter-spacing:-0.02em}
+#topbar .d{margin-left:auto;font-size:12px;color:var(--sub);font-variant-numeric:tabular-nums}
+/* ---- 密码门 ---- */
+#gate{position:fixed;inset:0;background:var(--bg);z-index:50;display:flex;align-items:center;justify-content:center;padding:24px}
+.gate-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:34px 26px;width:100%;max-width:340px;text-align:center;box-shadow:0 8px 30px rgba(15,20,25,.06)}
+.gate-ico{width:56px;height:56px;margin:0 auto 14px;border-radius:16px;background:var(--purple-glow);display:flex;align-items:center;justify-content:center;color:var(--purple)}
+.gate-card h1{font-size:18px;font-weight:700;letter-spacing:-0.02em;margin-bottom:4px}
+.gate-card p{font-size:13px;color:var(--sub);margin-bottom:20px}
+#pwd{width:100%;height:46px;border:1px solid #e5e5e5;border-radius:var(--radius-xs);padding:0 14px;font-size:16px;outline:none;text-align:center;letter-spacing:2px;background:#fafafa;transition:border .2s var(--ease)}
+#pwd:focus{border-color:var(--purple);background:#fff}
+#btn-enter{width:100%;height:46px;border:none;border-radius:var(--radius-xs);background:var(--purple);color:#fff;font-size:15px;font-weight:600;margin-top:14px;cursor:pointer;transition:all .2s var(--ease)}
+#btn-enter:active{transform:scale(0.97)}
+#gate-err{font-size:12px;color:#dc2626;margin-top:12px;min-height:16px}
+/* ---- 主体 ---- */
+#app{max-width:720px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 66px) 16px 48px}
+@media(min-width:600px){#app{padding-left:32px;padding-right:32px}}
+/* 概览卡（同工作台 overview-card） */
+.ov-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.ov-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 10px;text-align:left;cursor:pointer;transition:all .2s var(--ease);position:relative;overflow:hidden}
+.ov-card:active{transform:scale(0.97)}
+.ov-icon{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:8px}
+.ov-icon svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ov-label{font-size:11px;color:var(--sub);font-weight:500}
+.ov-value{font-size:22px;font-weight:700;letter-spacing:-0.03em;line-height:1.1;margin-top:2px;font-variant-numeric:tabular-nums}
+/* 相册分区 */
+.album-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:10px;overflow:hidden}
+.album-head{display:flex;align-items:center;gap:10px;padding:13px 14px 9px}
+.album-head .chip{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex:none}
+.album-head .chip svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.album-head .name{font-size:15px;font-weight:700;letter-spacing:-0.01em}
+.album-head .cnt{font-size:12px;color:var(--sub);margin-left:auto;font-variant-numeric:tabular-nums}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:4px 8px 10px}
+@media(min-width:520px){.grid{grid-template-columns:repeat(4,1fr)}}
+.ph{position:relative;aspect-ratio:1/1;overflow:hidden;border-radius:6px;background:#f1f2f4;cursor:pointer}
 .ph img{width:100%;height:100%;object-fit:cover;display:block}
-/* ---- 状态提示 ---- */
-.state{padding:56px 20px;text-align:center;color:#8a968f;font-size:14px}
-.state .ico{width:52px;height:52px;margin:0 auto 12px;color:#b9c6bf;display:block}
-#btn-retry{margin-top:14px;height:38px;padding:0 22px;border:1.5px solid #1a7a4a;color:#1a7a4a;background:#fff;border-radius:20px;font-size:14px;cursor:pointer}
-footer{text-align:center;font-size:11px;color:#a7b2ac;padding:26px 20px 0}
-/* ---- 大图浏览 ---- */
-#lb{position:fixed;inset:0;background:#000;z-index:60;display:flex;flex-direction:column}
+/* ---- 状态 ---- */
+.state{padding:56px 20px;text-align:center;color:var(--sub);font-size:14px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius)}
+.state .ico{width:52px;height:52px;margin:0 auto 12px;color:#c3c9cf;display:block}
+#btn-retry{margin-top:14px;height:36px;padding:0 22px;border:none;color:#fff;background:var(--purple);border-radius:18px;font-size:13px;font-weight:600;cursor:pointer}
+footer{text-align:center;font-size:11px;color:#9aa1a8;padding:22px 20px 0}
+/* ---- 大图 ---- */
+#lb{position:fixed;inset:0;background:#0a0a0c;z-index:60;display:flex;flex-direction:column}
 .lb-top{display:flex;align-items:center;justify-content:space-between;padding:calc(env(safe-area-inset-top) + 10px) 14px 10px;color:#fff}
-.lb-cnt{font-size:13px;color:rgba(255,255,255,.75)}
-#lb-close{background:rgba(255,255,255,.15);border:none;color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.lb-cnt{font-size:13px;color:rgba(255,255,255,.72);font-variant-numeric:tabular-nums}
+#lb-close{background:rgba(255,255,255,.14);border:none;color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .lb-stage{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
 #lb-img{max-width:100%;max-height:100%;object-fit:contain}
 .lb-nav{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border:none;border-radius:50%;background:rgba(255,255,255,.14);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center}
 #lb-prev{left:10px}
 #lb-next{right:10px}
-.lb-hint{text-align:center;color:rgba(255,255,255,.45);font-size:11px;padding:10px 0 calc(env(safe-area-inset-bottom) + 12px)}
+.lb-hint{text-align:center;color:rgba(255,255,255,.4);font-size:11px;padding:10px 0 calc(env(safe-area-inset-bottom) + 12px)}
 .hidden{display:none!important}
 .locked{overflow:hidden}
-.spinner{width:34px;height:34px;margin:0 auto 12px;border:3px solid #dfe7e2;border-top-color:#1a7a4a;border-radius:50%;animation:spin .8s linear infinite}
+.spinner{width:32px;height:32px;margin:0 auto 12px;border:3px solid #e5e7ea;border-top-color:var(--purple);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-@media (min-width:520px){.grid{grid-template-columns:repeat(4,1fr)}}
 </style>
 </head>
 <body>
+
+<!-- 顶栏 -->
+<div id="topbar" class="hidden">
+  <div class="logo">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.6"/><path d="M21 15l-5-5L5 21"/></svg>
+  </div>
+  <div class="t">球队相册</div>
+  <div class="d" id="total-cnt"></div>
+</div>
 
 <!-- 访问密码门 -->
 <div id="gate">
   <div class="gate-card">
     <div class="gate-ico">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1a7a4a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="3"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
     </div>
     <h1>球队相册</h1>
     <p>仅限球队家庭访问，请输入访问密码</p>
@@ -75,14 +104,7 @@ footer{text-align:center;font-size:11px;color:#a7b2ac;padding:26px 20px 0}
 
 <!-- 相册主体 -->
 <div id="app" class="hidden">
-  <header>
-    <h1>球队相册</h1>
-    <div class="sub">记录孩子们的绿茵时光</div>
-    <div class="note">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
-      仅限球队家庭访问
-    </div>
-  </header>
+  <div class="ov-grid" id="ov"></div>
   <div id="albums"></div>
   <footer>照片由教练统一整理上传 · 请勿将链接与密码外传</footer>
 </div>
@@ -104,7 +126,7 @@ footer{text-align:center;font-size:11px;color:#a7b2ac;padding:26px 20px 0}
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
     </button>
   </div>
-  <div class="lb-hint">左右滑动切换 · 长按照片可保存</div>
+  <div class="lb-hint">左右滑动切换 · 下滑关闭 · 长按可保存照片</div>
 </div>
 
 <script>
@@ -115,6 +137,14 @@ const SITE="https://seoj07617-stack.github.io/team-album/";
 const PASS_SHA256="072e379e98c0dc84cab004cf96aca539b05fe25f0398d0447de937772fc791ab"; // 访问密码的SHA-256，改密码请替换此值
 const PASS_DAYS=30;
 const IMG_RE=/\.(jpe?g|png|gif|webp|bmp)$/i;
+/* 相册图标与配色（新增相册名不在表内时用默认样式） */
+const THEME={
+  "集体照":{c:"#5b5bd6",bg:"rgba(91,91,214,0.08)",icon:'<svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="3.5"/><path d="M21 21v-2a4 4 0 0 0-3-3.87"/><path d="M15.5 3.6a3.5 3.5 0 0 1 0 6.8"/></svg>'},
+  "训练照":{c:"#059669",bg:"rgba(5,150,105,0.08)",icon:'<svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 8-6-16-3 8H2"/></svg>'},
+  "比赛照":{c:"#d97706",bg:"rgba(217,119,6,0.08)",icon:'<svg viewBox="0 0 24 24"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M6 3h12v6a6 6 0 0 1-12 0V3z"/><path d="M6 5H3v2a4 4 0 0 0 3 3.87"/><path d="M18 5h3v2a4 4 0 0 1-3 3.87"/></svg>'},
+  "个人照":{c:"#2563eb",bg:"rgba(37,99,235,0.08)",icon:'<svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="3.5"/></svg>'},
+  "_default":{c:"#536471",bg:"rgba(83,100,113,0.08)",icon:'<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.6"/><path d="M21 15l-5-5L5 21"/></svg>'}
+};
 /* ======================================== */
 
 const $=s=>document.querySelector(s);
@@ -141,12 +171,13 @@ async function enter(){
 }
 function unlock(){
   gate.classList.add("hidden");document.body.classList.remove("locked");
-  app.classList.remove("hidden");load();
+  app.classList.remove("hidden");$("#topbar").classList.remove("hidden");
+  load();
 }
 $("#btn-enter").addEventListener("click",enter);
 $("#pwd").addEventListener("keydown",e=>{if(e.key==="Enter")enter()});
 
-/* ---- 相册加载：优先GitHub API自动发现，失败时回退到manifest清单 ---- */
+/* ---- 相册加载：优先GitHub API自动发现，失败时回退manifest清单 ---- */
 function getJSON(url,timeout){
   return new Promise((res,rej)=>{
     const c=("AbortController"in window)?new AbortController():null;
@@ -174,6 +205,7 @@ async function fromManifest(){
 }
 async function load(){
   albumsBox.innerHTML='<div class="state"><div class="spinner"></div>正在加载相册…</div>';
+  $("#ov").innerHTML="";
   let albums=null;
   try{albums=await fromAPI()}catch(e){}
   if(albums===null){try{albums=await fromManifest()}catch(e){}}
@@ -187,17 +219,33 @@ async function load(){
   render(albums);
 }
 function esc(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function theme(name){return THEME[name]||THEME["_default"]}
 function render(albums){
   photos=[];
+  $("#ov").innerHTML="";
   if(!albums.length){
     albumsBox.innerHTML='<div class="state">'
-      +'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.8"/><path d="M21 15l-5-5L5 21"/></svg>'
+      +'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.8"/><path d="M21 15l-5-5L5 21"/></svg>'
       +'照片整理中，敬请期待</div>';
+    $("#total-cnt").textContent="";
     return;
   }
+  /* 概览卡 */
+  let ov="";
+  for(const a of albums){
+    const th=theme(a.name);
+    ov+='<div class="ov-card" data-n="'+esc(a.name)+'"><div class="ov-icon" style="color:'+th.c+';background:'+th.bg+'">'+th.icon+'</div><div class="ov-label">'+esc(a.name)+'</div><div class="ov-value">'+a.files.length+'</div></div>';
+  }
+  $("#ov").innerHTML=ov;
+  $("#ov").querySelectorAll(".ov-card").forEach(el=>el.addEventListener("click",()=>{
+    const t=$("#albums").querySelector('[data-a="'+el.dataset.n+'"]');
+    if(t)t.scrollIntoView({behavior:"smooth",block:"start"});
+  }));
+  /* 相册分区 */
   let html="";
   for(const a of albums){
-    html+='<section class="album-card"><div class="album-head"><span class="bar"></span><span class="name">'+esc(a.name)+'</span><span class="cnt">'+a.files.length+' 张</span></div><div class="grid">';
+    const th=theme(a.name);
+    html+='<section class="album-card" data-a="'+esc(a.name)+'"><div class="album-head"><div class="chip" style="color:'+th.c+';background:'+th.bg+'">'+th.icon+'</div><span class="name">'+esc(a.name)+'</span><span class="cnt">'+a.files.length+' 张</span></div><div class="grid">';
     for(const f of a.files){
       const url=SITE+"uploads/"+encodeURIComponent(a.name)+"/"+encodeURIComponent(f.name);
       const idx=photos.push({a:a.name,u:url})-1;
@@ -207,6 +255,7 @@ function render(albums){
   }
   albumsBox.innerHTML=html;
   albumsBox.querySelectorAll(".ph").forEach(el=>el.addEventListener("click",()=>openLb(+el.dataset.i)));
+  $("#total-cnt").textContent="共 "+photos.length+" 张";
 }
 
 /* ---- 大图浏览 ---- */
