@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#5353cf">
 <title>球队相册</title>
 <style>
 :root{
@@ -17,7 +17,7 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Helvetica Neue','PingFang SC',sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh}
 button{font-family:inherit}
-/* ---- 顶栏 ---- */
+/* ---- 顶栏（紫色） ---- */
 #topbar{position:fixed;top:0;left:0;right:0;z-index:40;height:calc(env(safe-area-inset-top,0px) + 52px);padding:env(safe-area-inset-top,0px) 14px 0;background:linear-gradient(135deg,#5353cf,#7677e8);border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:9px;box-shadow:0 2px 12px rgba(83,83,207,.25)}
 #btn-menu{width:34px;height:34px;border:none;background:transparent;border-radius:9px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;flex:none;margin-left:-8px;transition:background .2s var(--ease)}
 #btn-menu:active{background:rgba(255,255,255,.16)}
@@ -59,12 +59,11 @@ button{font-family:inherit}
 /* ---- 主体 ---- */
 #app{max-width:720px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 66px) 16px 48px}
 @media(min-width:600px){#app{padding-left:32px;padding-right:32px}}
-/* ---- 紫色标签页 ---- */
-#tabs{position:sticky;top:calc(env(safe-area-inset-top,0px) + 52px);z-index:30;padding:10px 0 4px;margin-bottom:12px;background:linear-gradient(to bottom,var(--bg) 80%,rgba(247,247,248,0))}
-.tabs-wrap{display:flex;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px;box-shadow:0 0 0 4px var(--purple-glow);overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
-.tabs-wrap::-webkit-scrollbar{display:none}
-.tab{flex:1 0 auto;height:34px;border:none;background:transparent;border-radius:8px;font-size:13px;font-weight:600;color:var(--sub);cursor:pointer;white-space:nowrap;padding:0 15px;transition:all .2s var(--ease);letter-spacing:-0.01em}
-.tab.on{background:var(--purple);color:#fff;box-shadow:0 2px 10px rgba(91,91,214,.32)}
+/* ---- 当前分类条 ---- */
+#curbar{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius-xs);padding:10px 14px;margin-bottom:12px;font-size:13px;font-weight:600;color:var(--ink)}
+#curbar .dot{width:8px;height:8px;border-radius:50%;background:var(--purple);flex:none}
+#curbar-back{margin-left:auto;border:none;background:var(--purple-glow);color:var(--purple);font-size:12px;font-weight:600;padding:6px 14px;border-radius:16px;cursor:pointer;transition:all .2s var(--ease)}
+#curbar-back:active{transform:scale(0.95)}
 /* 概览卡 */
 .ov-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
 .ov-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 10px;text-align:left;cursor:pointer;transition:all .2s var(--ease);position:relative;overflow:hidden}
@@ -109,7 +108,7 @@ footer{text-align:center;font-size:11px;color:#9aa1a8;padding:22px 20px 0}
 </head>
 <body>
 
-<!-- 顶栏：左上角抽屉入口 + 队徽 -->
+<!-- 顶栏：左上角抽屉入口 + 队徽（紫色） -->
 <div id="topbar" class="hidden">
   <button id="btn-menu" aria-label="打开菜单">
     <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
@@ -123,7 +122,7 @@ footer{text-align:center;font-size:11px;color:#9aa1a8;padding:22px 20px 0}
 <div id="drawer-mask"></div>
 <aside id="drawer">
   <div class="dr-head">
-    <img src="assets/logo-white.png?v=2" alt="">
+    <img src="assets/logo-white.png?v=3" alt="">
     <div class="dr-title">球队相册</div>
     <div class="dr-sub">球队家庭的专属记忆空间</div>
   </div>
@@ -147,7 +146,7 @@ footer{text-align:center;font-size:11px;color:#9aa1a8;padding:22px 20px 0}
 
 <!-- 相册主体 -->
 <div id="app" class="hidden">
-  <div id="tabs"></div>
+  <div id="curbar" class="hidden"><span class="dot"></span><span id="curbar-name"></span><button id="curbar-back">查看全部</button></div>
   <div class="ov-grid" id="ov"></div>
   <div id="albums"></div>
   <div id="empty-state" class="state hidden">
@@ -243,20 +242,18 @@ function renderNav(){
     return '<div class="dr-item'+(n===curTab?' on':'')+'" data-n="'+esc(n)+'"><div class="chip" style="color:'+th.c+';background:'+th.bg+'">'+th.icon+'</div><span>'+esc(n)+'</span><span class="n">'+cnt+'</span></div>';
   }).join("");
   $("#dr-nav").querySelectorAll(".dr-item").forEach(el=>el.addEventListener("click",()=>setTab(el.dataset.n)));
-  $("#tabs").innerHTML='<div class="tabs-wrap">'+navNames().map(n=>'<button class="tab'+(n===curTab?' on':'')+'" data-n="'+esc(n)+'">'+esc(n)+'</button>').join("")+'</div>';
-  $("#tabs").querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>setTab(b.dataset.n)));
 }
 
 function setTab(name){
   curTab=name;
-  $("#tabs").querySelectorAll(".tab").forEach(b=>b.classList.toggle("on",b.dataset.n===name));
   $("#dr-nav").querySelectorAll(".dr-item").forEach(b=>b.classList.toggle("on",b.dataset.n===name));
-  const ov=$("#ov");
+  const ov=$("#ov"), cb=$("#curbar");
   if(name==="全部"){
-    ov.style.display="";
+    ov.style.display="";cb.classList.add("hidden");
     albumsBox.querySelectorAll(".album-card").forEach(s=>s.style.display="");
   }else{
-    ov.style.display="none";
+    ov.style.display="none";cb.classList.remove("hidden");
+    $("#curbar-name").textContent="当前分类："+name;
     albumsBox.querySelectorAll(".album-card").forEach(s=>s.style.display=(s.dataset.a===name)?"":"none");
   }
   const visible=[...albumsBox.querySelectorAll(".album-card")].some(s=>s.style.display!=="none");
