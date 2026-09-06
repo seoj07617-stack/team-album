@@ -30,9 +30,7 @@ button{font-family:inherit}
 #drawer-mask.open{opacity:1;pointer-events:auto}
 #drawer{position:fixed;top:0;bottom:0;left:0;width:284px;max-width:82vw;background:var(--card);z-index:46;transform:translateX(-103%);transition:transform .28s var(--ease);display:flex;flex-direction:column;border-right:1px solid var(--line);visibility:hidden}
 #drawer.open{transform:none;visibility:visible}
-.dr-head{background:linear-gradient(135deg,#4338ca,#5b5bd6);padding:calc(env(safe-area-inset-top,0px) + 28px) 20px 22px;color:#fff;position:relative;overflow:hidden;flex:none}
-.dr-head:before{content:'';position:absolute;right:-34px;top:-34px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.13)}
-.dr-head:after{content:'';position:absolute;right:26px;bottom:-46px;width:86px;height:86px;border-radius:50%;background:rgba(255,255,255,.09)}
+.dr-head{background-color:#4338ca;background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1.3px),radial-gradient(130% 110% at 18% 0%,#4d42d6 0%,#4338ca 52%,#3a2fbd 100%);background-size:16px 16px,100% 100%;background-repeat:repeat,no-repeat;padding:calc(env(safe-area-inset-top,0px) + 28px) 20px 22px;color:#fff;position:relative;overflow:hidden;flex:none}
 .dr-head .crest{width:74px;height:74px;display:block;margin-bottom:12px;position:relative;z-index:1;filter:drop-shadow(0 3px 10px rgba(15,20,25,.35))}
 .dr-title{font-size:18px;font-weight:700;letter-spacing:-0.02em;position:relative;z-index:1}
 .dr-sub{font-size:12px;opacity:.88;margin-top:3px;position:relative;z-index:1}
