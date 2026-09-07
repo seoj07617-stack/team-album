@@ -266,7 +266,7 @@ function setTab(name){
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
-/* ---- 相册加载：优先GitHub API自动发现，失败时回退manifest清单 ---- */
+/* ---- 相册加载：GitHub API自动发现 → 本地缓存兜底 → manifest清单兜底 ---- */
 function getJSON(url,timeout){
   return new Promise((res,rej)=>{
     const c=("AbortController"in window)?new AbortController():null;
@@ -277,16 +277,28 @@ function getJSON(url,timeout){
       .catch(e=>{clearTimeout(t);rej(e)});
   });
 }
-async function fromAPI(){
-  const dirs=(await getJSON("https://api.github.com/repos/"+OWNER+"/"+REPO+"/contents/uploads")).filter(d=>d.type==="dir");
-  const albums=[];
-  for(const d of dirs){
-    try{
-      const fs=(await getJSON("https://api.github.com/repos/"+OWNER+"/"+REPO+"/contents/uploads/"+encodeURIComponent(d.name))).filter(f=>f.type==="file"&&IMG_RE.test(f.name));
-      if(fs.length)albums.push({name:d.name,files:fs});
-    }catch(e){}
+async function fromTrees(){
+  const j=await getJSON("https://api.github.com/repos/"+OWNER+"/"+REPO+"/git/trees/main?recursive=1");
+  const map={};
+  for(const e of (j.tree||[])){
+    if(e.type!=="blob")continue;
+    const p=e.path||"";
+    if(p.indexOf("uploads/")!==0||!IMG_RE.test(p))continue;
+    const rest=p.slice(8),si=rest.indexOf("/");
+    if(si<0||rest.indexOf("/",si+1)>=0)continue; /* 只认 uploads/相册/照片 一层结构 */
+    (map[rest.slice(0,si)]=map[rest.slice(0,si)]||[]).push({name:rest.slice(si+1)});
   }
-  return albums;
+  return Object.keys(map).map(n=>({name:n,files:map[n]}));
+}
+function saveCache(albums){
+  try{localStorage.setItem("album_cache_v1",JSON.stringify({t:Date.now(),albums:albums.map(a=>({name:a.name,files:a.files.map(f=>f.name)}))}))}catch(e){}
+}
+function fromCache(){
+  try{
+    const c=JSON.parse(localStorage.getItem("album_cache_v1")||"null");
+    if(!c||!Array.isArray(c.albums))return null;
+    return c.albums.map(a=>({name:a.name,files:(a.files||[]).filter(n=>IMG_RE.test(n)).map(n=>({name:n}))}));
+  }catch(e){return null}
 }
 async function fromManifest(){
   const m=await getJSON(SITE+"manifest.json?t="+Date.now());
@@ -296,7 +308,8 @@ async function load(){
   albumsBox.innerHTML='<div class="state"><div class="spinner"></div>正在加载相册…</div>';
   $("#ov").innerHTML="";$("#empty-state").classList.add("hidden");
   let albums=null;
-  try{albums=await fromAPI()}catch(e){}
+  try{albums=await fromTrees();if(albums!==null)saveCache(albums)}catch(e){}
+  if(albums===null)albums=fromCache();
   if(albums===null){try{albums=await fromManifest()}catch(e){}}
   if(albums===null){
     albumsBox.innerHTML='<div class="state">'
