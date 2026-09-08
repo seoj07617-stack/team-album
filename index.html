@@ -72,8 +72,7 @@ button{font-family:inherit}
 #btn-menu{width:38px;height:38px;border:none;background:transparent;border-radius:11px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;flex:none;transition:background .2s var(--ease),transform .16s var(--ease)}
 #btn-menu:active{background:rgba(255,255,255,.2);transform:scale(.9)}
 #btn-menu svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
-#topbar .crest{width:33px;height:33px;flex:none;display:block;border-radius:9px;filter:drop-shadow(0 1px 4px rgba(15,20,25,.35))}
-#topbar .t{font-size:16px;font-weight:700;letter-spacing:-0.02em;color:#fff}
+#topbar .crest{position:absolute;left:50%;transform:translateX(-50%);width:34px;height:34px;display:block;border-radius:10px;filter:drop-shadow(0 1px 4px rgba(15,20,25,.35))}
 #topbar .d{margin-left:auto;font-size:12px;color:rgba(255,255,255,.85);font-variant-numeric:tabular-nums;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.22);padding:5px 11px;border-radius:999px;margin-right:4px}
 
 /* ---- 抽屉（玻璃面板） ---- */
@@ -202,7 +201,6 @@ footer{text-align:center;font-size:11px;color:var(--sub);padding:24px 20px 0;opa
     <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
   </button>
   <img class="crest" src="assets/logo-crest.png?v=2" alt="队徽">
-  <div class="t">球队相册</div>
   <div class="d" id="total-cnt"></div>
 </div>
 
