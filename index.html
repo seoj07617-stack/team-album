@@ -313,7 +313,7 @@ function closeDrawer(){drawer.classList.remove("open");mask.classList.remove("op
 $("#btn-menu").addEventListener("click",openDrawer);
 mask.addEventListener("click",closeDrawer);
 $("#curbar-back").addEventListener("click",()=>setTab("全部"));
-function navNames(){return ["个人照","全部","集体照","训练照","比赛照"]}
+function navNames(){return ["全部","个人照","集体照","训练照","比赛照"]}
 function theme(name){return THEME[name]||THEME["_default"]}
 
 function renderNav(){
