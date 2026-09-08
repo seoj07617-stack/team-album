@@ -263,7 +263,7 @@ footer{text-align:center;font-size:11px;color:var(--sub);padding:24px 20px 0;opa
 /* ================= 配置 ================= */
 const OWNER="seoj07617-stack", REPO="team-album";
 const SITE="https://seoj07617-stack.github.io/team-album/";
-const PASS_SHA256="072e379e98c0dc84cab004cf96aca539b05fe25f0398d0447de937772fc791ab"; // 访问密码的SHA-256，改密码请替换此值
+const PASS_SHA256="6d587176a3b3269a28b18ec5bc06577bd2d19bea89a68aed34c926c7c098ebc8"; // 访问密码的SHA-256，改密码请替换此值
 const PASS_DAYS=30;
 const IMG_RE=/\.(jpe?g|png|gif|webp|bmp)$/i;
 /* 相册图标与配色（新增相册名不在表内时用默认样式） */
@@ -287,7 +287,7 @@ async function sha256hex(s){
   return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,"0")).join("");
 }
 function passOk(){
-  try{const o=JSON.parse(localStorage.getItem("album_pass_v1"));return o&&Date.now()-o.t<PASS_DAYS*864e5}
+  try{const o=JSON.parse(localStorage.getItem("album_pass_v1"));return o&&o.k===PASS_SHA256.slice(0,8)&&Date.now()-o.t<PASS_DAYS*864e5}
   catch(e){return false}
 }
 async function enter(){
@@ -296,7 +296,7 @@ async function enter(){
   $("#btn-enter").textContent="验证中…";
   const ok=await sha256hex(v)===PASS_SHA256;
   $("#btn-enter").textContent="进入相册";
-  if(ok){localStorage.setItem("album_pass_v1",JSON.stringify({t:Date.now()}));unlock()}
+  if(ok){localStorage.setItem("album_pass_v1",JSON.stringify({t:Date.now(),k:PASS_SHA256.slice(0,8)}));unlock()}
   else{$("#gate-err").textContent="密码不正确，请重试";$("#pwd").value=""}
 }
 function unlock(){
