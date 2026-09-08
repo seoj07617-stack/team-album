@@ -12,13 +12,13 @@
 <link rel="manifest" href="site.webmanifest">
 <style>
 :root{
-  --bg:#f2f0fa;
+  --bg:#ffffff;
   --ink:#1b1a3a; --sub:#5d5a86;
   --purple:#5b5bd6;
   --grad:linear-gradient(135deg,#4f46e5 0%,#7c4ae8 55%,#a855f7 100%);
   --grad-soft:linear-gradient(135deg,rgba(79,70,229,.14),rgba(168,85,247,.14));
-  --glass:rgba(255,255,255,.58);
-  --glass-strong:rgba(255,255,255,.74);
+  --glass:rgba(255,255,255,.66);
+  --glass-strong:rgba(255,255,255,.78);
   --glass-border:rgba(255,255,255,.75);
   --glass-blur:saturate(170%) blur(22px);
   --line:rgba(98,88,190,.14);
@@ -46,10 +46,9 @@ button{font-family:inherit}
 /* ---- 极光背景（玻璃模糊的内容源） ---- */
 #aurora{position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
-    radial-gradient(640px 460px at 12% 6%, rgba(139,124,255,.42), transparent 62%),
-    radial-gradient(760px 560px at 92% 16%, rgba(196,141,255,.38), transparent 62%),
-    radial-gradient(900px 640px at 50% 104%, rgba(124,158,255,.34), transparent 66%),
-    radial-gradient(520px 420px at 84% 84%, rgba(255,173,214,.22), transparent 62%),
+    radial-gradient(640px 460px at 12% 6%, rgba(139,124,255,.09), transparent 62%),
+    radial-gradient(760px 560px at 92% 16%, rgba(196,141,255,.08), transparent 62%),
+    radial-gradient(900px 640px at 50% 104%, rgba(124,158,255,.07), transparent 66%),
     var(--bg);
 }
 @media(prefers-color-scheme:dark){
