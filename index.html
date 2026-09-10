@@ -321,10 +321,10 @@ const THEME={
 };
 /* ======================================== */
 
-/* 球员档案：名单待教练提供——把 name/pos/grade 填好即在档案页显示；
+/* 球员档案：名单待教练提供——name姓名/age年龄/pos场上位置/perf表现，填好即在档案页显示；
    个人照文件名以 p<号码>_ 开头（如 p7_xxxx.jpg）会自动归到该球员名下 */
 const PLAYER_ICON='<svg viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="3.6"/><path d="M4.5 20.5c.6-4 3.6-6 7.5-6s6.9 2 7.5 6"/></svg>';
-const PLAYERS=Array.from({length:25},(_,i)=>({num:i+1,name:"",pos:"",grade:""}));
+const PLAYERS=Array.from({length:25},(_,i)=>({num:i+1,name:"",age:"",pos:"",perf:""}));
 
 const $=s=>document.querySelector(s);
 const gate=$("#gate"), app=$("#app"), albumsBox=$("#albums"), lb=$("#lb"), drawer=$("#drawer"), mask=$("#drawer-mask");
@@ -566,9 +566,12 @@ function openPlayer(i){
       return '<div class="ph" data-i="'+idx+'"><img loading="lazy" src="'+x.u+'" alt="" onload="this.classList.add(\'ok\')"></div>';
     }).join("")+'</div></div>';
   }
-  box.innerHTML='<div class="pl-detail-head glass"><div class="pl-avatar">'+p.num+'</div><div><div class="pl-nm">'+nm+'</div><div class="pl-pz">'+esc(p.pos||"场上位置待录入")+(p.grade?(" · "+esc(p.grade)):"")+'</div></div></div>'
-    +'<div class="pl-meta"><div class="m glass"><div class="k">球衣号码</div><div class="v">'+p.num+' 号</div></div><div class="m glass"><div class="k">场上位置</div><div class="v">'+esc(p.pos||"—")+'</div></div><div class="m glass"><div class="k">年级</div><div class="v">'+esc(p.grade||"—")+'</div></div><div class="m glass"><div class="k">个人照</div><div class="v">'+own.length+' 张</div></div></div>'
-    +'<div class="sec-title">'+nm+'的照片</div>'+ph;
+  box.innerHTML='<div class="pl-detail-head glass"><div class="pl-avatar">'+p.num+'</div><div><div class="pl-nm">'+nm+'</div><div class="pl-pz">'+esc(p.pos||"场上位置待录入")+(p.age?(" · "+esc(p.age)+"岁"):"")+'</div></div></div>'
+    +'<div class="pl-meta"><div class="m glass"><div class="k">姓名</div><div class="v">'+nm+'</div></div><div class="m glass"><div class="k">年龄</div><div class="v">'+esc(p.age?(p.age+"岁"):"—")+'</div></div><div class="m glass"><div class="k">球衣号码</div><div class="v">'+p.num+' 号</div></div><div class="m glass"><div class="k">场上位置</div><div class="v">'+esc(p.pos||"—")+'</div></div></div>'
+    +'<div class="sec-title">表现记录</div>'
+    +(p.perf?'<div class="glass" style="border-radius:var(--radius);padding:14px 16px;font-size:13.5px;line-height:1.7;white-space:pre-line">'+esc(p.perf)+'</div>'
+            :'<div class="state glass" style="padding:30px 20px;font-size:13px;margin-bottom:0">表现记录待补充</div>')
+    +'<div class="sec-title">TA的照片</div>'+ph;
   box.querySelectorAll(".ph").forEach(el=>el.addEventListener("click",()=>openLb(+el.dataset.i)));
   setView("player");
 }
