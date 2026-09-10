@@ -157,7 +157,7 @@ footer{text-align:center;font-size:11px;color:var(--sub);padding:24px 20px 0;opa
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* ---- 底部磨砂浮窗（相册分类，iOS玻璃质感） ---- */
-#dock{position:fixed;bottom:calc(12px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);z-index:44;display:flex;align-items:center;gap:2px;padding:6px;border-radius:26px;
+#dock{position:fixed;bottom:calc(12px + env(safe-area-inset-bottom,0px));left:0;right:0;margin:0 auto;width:max-content;max-width:calc(100vw - 24px);z-index:44;display:flex;align-items:center;gap:2px;padding:6px;border-radius:26px;
   background:rgba(255,255,255,.58);
   backdrop-filter:saturate(180%) blur(26px);-webkit-backdrop-filter:saturate(180%) blur(26px);
   border:1px solid rgba(255,255,255,.72);
