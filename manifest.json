@@ -1,1 +1,21 @@
-{"updated":"2026-09-08T15:30:31+08:00","albums":[{"name":"集体照","files":["0f40c6d01986.jpg","15da34f45dcf.jpg","39118a300f0e.jpg","50d21ffaffd7.jpg","7b1a3ac9a7c9.jpg","891db817a99b.jpg","eee361d0588d.jpg","f16de1f8512b.jpg","f5b95a70c88c.jpg"]},{"name":"训练照","files":[]},{"name":"比赛照","files":[]},{"name":"个人照","files":[]}]}
+{
+  "updated": "2026-09-10T09:44:26+08:00",
+  "albums": [
+    {
+      "name": "集体照",
+      "files": []
+    },
+    {
+      "name": "训练照",
+      "files": []
+    },
+    {
+      "name": "比赛照",
+      "files": []
+    },
+    {
+      "name": "个人照",
+      "files": []
+    }
+  ]
+}
