@@ -263,6 +263,7 @@ footer{text-align:center;font-size:11px;color:var(--sub);padding:24px 20px 0;opa
 /* ================= 配置 ================= */
 const OWNER="seoj07617-stack", REPO="team-album";
 const SITE="https://seoj07617-stack.github.io/team-album/";
+const R2="https://pub-643548d22cc64d8689e8094f9e5a82bd.r2.dev/"; /* R2对象存储公开源 */
 const PASS_SHA256="6d587176a3b3269a28b18ec5bc06577bd2d19bea89a68aed34c926c7c098ebc8"; // 访问密码的SHA-256，改密码请替换此值
 const PASS_DAYS=30;
 const IMG_RE=/\.(jpe?g|png|gif|webp|bmp)$/i;
@@ -347,7 +348,7 @@ function setTab(name){
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
-/* ---- 相册加载：GitHub API自动发现 → 本地缓存兜底 → manifest清单兜底 ---- */
+/* ---- 相册加载：R2清单优先 → 本地缓存兜底 → GitHub API自动发现兜底 ---- */
 function getJSON(url,timeout){
   return new Promise((res,rej)=>{
     const c=("AbortController"in window)?new AbortController():null;
@@ -382,16 +383,16 @@ function fromCache(){
   }catch(e){return null}
 }
 async function fromManifest(){
-  const m=await getJSON(SITE+"manifest.json?t="+Date.now());
+  const m=await getJSON(R2+"manifest.json?t="+Date.now());
   return (m.albums||[]).map(a=>({name:a.name,files:(a.files||[]).filter(n=>IMG_RE.test(n)).map(n=>({name:n}))})).filter(a=>a.files.length);
 }
 async function load(){
   albumsBox.innerHTML='<div class="state glass"><div class="spinner"></div>正在加载相册…</div>';
   $("#ov").innerHTML="";$("#empty-state").classList.add("hidden");
   let albums=null;
-  try{albums=await fromTrees();if(albums!==null)saveCache(albums)}catch(e){}
+  try{albums=await fromManifest();if(albums!==null)saveCache(albums)}catch(e){}
   if(albums===null)albums=fromCache();
-  if(albums===null){try{albums=await fromManifest()}catch(e){}}
+  if(albums===null){try{albums=await fromTrees();if(albums!==null)saveCache(albums)}catch(e){}}
   if(albums===null){
     albumsBox.innerHTML='<div class="state glass">'
       +'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v5"/><circle cx="12" cy="16.5" r=".6" fill="currentColor"/></svg>'
@@ -428,7 +429,7 @@ function render(albums){
     const a=albums[i], th=theme(a.name);
     html+='<section class="album-card glass" data-a="'+esc(a.name)+'" style="animation-delay:'+(140+i*90)+'ms"><div class="album-head"><div class="chip" style="color:'+th.c+';background:'+th.bg+'">'+th.icon+'</div><span class="name">'+esc(a.name)+'</span><span class="cnt">'+a.files.length+' 张</span></div><div class="grid">';
     for(const f of a.files){
-      const url=SITE+"uploads/"+encodeURIComponent(a.name)+"/"+encodeURIComponent(f.name);
+      const url=R2+"uploads/"+encodeURIComponent(a.name)+"/"+encodeURIComponent(f.name);
       const idx=photos.push({a:a.name,u:url})-1;
       html+='<div class="ph" data-i="'+idx+'" style="animation-delay:'+Math.min(idx*35,600)+'ms"><img loading="lazy" src="'+url+'" alt="" onload="this.classList.add(\'ok\')"></div>';
     }
