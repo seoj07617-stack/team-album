@@ -114,15 +114,8 @@ button{font-family:inherit}
 #gate-err{font-size:12px;color:#e5484d;margin-top:12px;min-height:16px}
 
 /* ---- 主体 ---- */
-#app{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 78px) 16px 48px}
+#app{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 78px) 16px calc(120px + env(safe-area-inset-bottom,0px))}
 @media(min-width:600px){#app{padding-left:32px;padding-right:32px}}
-/* ---- 当前分类条（玻璃胶囊） ---- */
-#curbar{display:flex;align-items:center;gap:10px;border-radius:var(--radius-xs);padding:11px 15px;margin-bottom:12px;font-size:13px;font-weight:600;
-  animation:dropIn .45s var(--ease) both}
-@keyframes dropIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
-#curbar .dot{width:8px;height:8px;border-radius:50%;background:var(--grad);flex:none;box-shadow:0 0 8px rgba(139,92,246,.6)}
-#curbar-back{margin-left:auto;border:none;color:#fff;font-size:12px;font-weight:600;padding:7px 15px;border-radius:999px;cursor:pointer;background:var(--grad);box-shadow:0 6px 16px rgba(109,74,232,.32);transition:transform .16s var(--ease)}
-#curbar-back:active{transform:scale(.93)}
 
 /* 概览卡（玻璃砖） */
 .ov-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
@@ -162,6 +155,40 @@ button{font-family:inherit}
 footer{text-align:center;font-size:11px;color:var(--sub);padding:24px 20px 0;opacity:.75}
 .spinner{width:32px;height:32px;margin:0 auto 12px;border:3px solid rgba(120,110,200,.18);border-top-color:#7c4ae8;border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
+
+/* ---- 底部磨砂浮窗（相册分类，iOS玻璃质感） ---- */
+#dock{position:fixed;bottom:calc(12px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);z-index:44;display:flex;align-items:center;gap:2px;padding:6px;border-radius:26px;
+  background:rgba(255,255,255,.58);
+  backdrop-filter:saturate(180%) blur(26px);-webkit-backdrop-filter:saturate(180%) blur(26px);
+  border:1px solid rgba(255,255,255,.72);
+  box-shadow:0 12px 36px rgba(28,20,80,.22), inset 0 1px 0 rgba(255,255,255,.65);
+  animation:rise .55s var(--ease) both}
+@media(prefers-color-scheme:dark){#dock{background:rgba(30,27,62,.62);border-color:rgba(255,255,255,.14);box-shadow:0 12px 36px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.08)}}
+.dk{border:none;background:transparent;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:56px;padding:8px 10px 7px;border-radius:19px;cursor:pointer;color:var(--sub);font-size:10.5px;font-weight:600;letter-spacing:.02em;transition:transform .16s var(--ease),background .2s,color .2s}
+.dk svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.dk:active{transform:scale(.9)}
+.dk.on{color:#fff;background:var(--grad);box-shadow:0 6px 16px rgba(109,74,232,.4)}
+
+/* ---- 球员档案 ---- */
+.pl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(min-width:520px){.pl-grid{grid-template-columns:repeat(4,1fr)}}
+.pl-card{border-radius:var(--radius);padding:14px 8px 12px;text-align:center;cursor:pointer;transition:transform .18s var(--ease);animation:rise .5s var(--ease) both}
+.pl-card:active{transform:scale(.95)}
+.pl-avatar{width:52px;height:52px;margin:0 auto 8px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:800;background:var(--grad);box-shadow:0 6px 16px rgba(109,74,232,.35);font-variant-numeric:tabular-nums}
+.pl-name{font-size:13px;font-weight:700;letter-spacing:-.01em}
+.pl-pos{font-size:11px;color:var(--sub);margin-top:2px}
+.pl-detail-head{display:flex;align-items:center;gap:14px;border-radius:var(--radius);padding:18px 16px;margin-bottom:12px;animation:rise .5s var(--ease) both}
+.pl-detail-head .pl-avatar{width:60px;height:60px;font-size:23px;margin:0;flex:none}
+.pl-detail-head .pl-nm{font-size:18px;font-weight:800;letter-spacing:-.02em}
+.pl-detail-head .pl-pz{font-size:12px;color:var(--sub);margin-top:3px}
+.pl-meta{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:4px}
+.pl-meta .m{border-radius:var(--radius-xs);padding:12px 14px}
+.pl-meta .k{font-size:11px;color:var(--sub);font-weight:600}
+.pl-meta .v{font-size:15px;font-weight:700;margin-top:3px}
+#btn-back{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:var(--field);color:var(--ink);font-size:12.5px;font-weight:600;padding:8px 16px;border-radius:999px;cursor:pointer;margin-bottom:14px;transition:transform .16s var(--ease)}
+#btn-back:active{transform:scale(.94)}
+#btn-back svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sec-title{font-size:13px;font-weight:700;color:var(--sub);margin:18px 2px 10px;letter-spacing:.02em}
 
 /* ---- 大图（毛玻璃暗场） ---- */
 #lb{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;
@@ -227,16 +254,32 @@ footer{text-align:center;font-size:11px;color:var(--sub);padding:24px 20px 0;opa
 
 <!-- 相册主体 -->
 <div id="app" class="hidden">
-  <div id="curbar" class="glass hidden"><span class="dot"></span><span id="curbar-name"></span><button id="curbar-back">查看全部</button></div>
-  <div class="ov-grid" id="ov"></div>
-  <div id="albums"></div>
-  <div id="empty-state" class="state glass hidden">
-    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.8"/><path d="M21 15l-5-5L5 21"/></svg>
-    <div class="es-t"></div>
-    <div class="es-s">照片上传后即可在这里查看</div>
+  <!-- 视图：相册 -->
+  <div id="view-album">
+    <div class="ov-grid" id="ov"></div>
+    <div id="albums"></div>
+    <div id="empty-state" class="state glass hidden">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.8"/><path d="M21 15l-5-5L5 21"/></svg>
+      <div class="es-t"></div>
+      <div class="es-s">照片上传后即可在这里查看</div>
+    </div>
+    <footer>照片由教练统一整理上传 · 请勿将链接与密码外传</footer>
   </div>
-  <footer>照片由教练统一整理上传 · 请勿将链接与密码外传</footer>
+  <!-- 视图：球员列表 -->
+  <div id="view-players" class="hidden">
+    <div id="players-list"></div>
+    <footer>仅限球队家庭查看 · 请勿将链接与密码外传</footer>
+  </div>
+  <!-- 视图：球员详情 -->
+  <div id="view-player" class="hidden">
+    <button id="btn-back"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>返回球员列表</button>
+    <div id="player-detail"></div>
+    <footer>仅限球队家庭查看 · 请勿将链接与密码外传</footer>
+  </div>
 </div>
+
+<!-- 底部磨砂浮窗：相册分类 -->
+<nav id="dock" class="hidden"></nav>
 
 <!-- 大图浏览 -->
 <div id="lb" class="hidden">
@@ -278,9 +321,14 @@ const THEME={
 };
 /* ======================================== */
 
+/* 球员档案：名单待教练提供——把 name/pos/grade 填好即在档案页显示；
+   个人照文件名以 p<号码>_ 开头（如 p7_xxxx.jpg）会自动归到该球员名下 */
+const PLAYER_ICON='<svg viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="3.6"/><path d="M4.5 20.5c.6-4 3.6-6 7.5-6s6.9 2 7.5 6"/></svg>';
+const PLAYERS=Array.from({length:25},(_,i)=>({num:i+1,name:"",pos:"",grade:""}));
+
 const $=s=>document.querySelector(s);
 const gate=$("#gate"), app=$("#app"), albumsBox=$("#albums"), lb=$("#lb"), drawer=$("#drawer"), mask=$("#drawer-mask");
-let photos=[], counts={}, curTab="全部", albumsCache=[];
+let photos=[], counts={}, curTab="全部", albumsCache=[], view="album";
 
 /* ---- 访问密码 ---- */
 async function sha256hex(s){
@@ -303,6 +351,7 @@ async function enter(){
 function unlock(){
   gate.classList.add("hidden");document.body.classList.remove("locked");
   app.classList.remove("hidden");$("#topbar").classList.remove("hidden");
+  renderDock();setView("album");
   load();
 }
 $("#btn-enter").addEventListener("click",enter);
@@ -313,29 +362,45 @@ function openDrawer(){drawer.classList.add("open");mask.classList.add("open")}
 function closeDrawer(){drawer.classList.remove("open");mask.classList.remove("open")}
 $("#btn-menu").addEventListener("click",openDrawer);
 mask.addEventListener("click",closeDrawer);
-$("#curbar-back").addEventListener("click",()=>setTab("全部"));
-function navNames(){return ["全部","个人照","集体照","训练照","比赛照"]}
 function theme(name){return THEME[name]||THEME["_default"]}
 
 function renderNav(){
-  const total=photos.length;
-  $("#dr-nav").innerHTML=navNames().map(n=>{
-    const th=theme(n), cnt=n==="全部"?total:(counts[n]||0);
-    return '<div class="dr-item'+(n===curTab?' on':'')+'" data-n="'+esc(n)+'"><div class="chip" style="color:var(--sub);background:rgba(120,110,200,.09)">'+th.icon+'</div><span>'+esc(n)+'</span><span class="n">'+cnt+'</span></div>';
-  }).join("");
-  $("#dr-nav").querySelectorAll(".dr-item").forEach(el=>el.addEventListener("click",()=>setTab(el.dataset.n)));
+  const items=[
+    {v:"album",label:"相册",icon:THEME["全部"].icon,cnt:photos.length},
+    {v:"players",label:"球员档案",icon:PLAYER_ICON,cnt:PLAYERS.length}
+  ];
+  $("#dr-nav").innerHTML=items.map(it=>
+    '<div class="dr-item'+(((view==="album"&&it.v==="album")||(view!=="album"&&it.v==="players"))?' on':'')+'" data-v="'+it.v+'"><div class="chip" style="color:var(--sub);background:rgba(120,110,200,.09)">'+it.icon+'</div><span>'+it.label+'</span><span class="n">'+it.cnt+'</span></div>'
+  ).join("");
+  $("#dr-nav").querySelectorAll(".dr-item").forEach(el=>el.addEventListener("click",()=>setView(el.dataset.v)));
 }
 
+function renderDock(){
+  $("#dock").innerHTML=["全部","集体照","训练照","比赛照","个人照"].map(n=>{
+    const th=theme(n);
+    return '<button class="dk'+(n===curTab?' on':'')+'" data-n="'+n+'">'+th.icon+'<span>'+n.replace("照","")+'</span></button>';
+  }).join("");
+  $("#dock").querySelectorAll(".dk").forEach(b=>b.addEventListener("click",()=>setTab(b.dataset.n)));
+}
+function setView(v){
+  view=v;closeDrawer();
+  $("#view-album").classList.toggle("hidden",v!=="album");
+  $("#view-players").classList.toggle("hidden",v!=="players");
+  $("#view-player").classList.toggle("hidden",v!=="player");
+  $("#dock").classList.toggle("hidden",v!=="album");
+  renderNav();
+  if(v==="players")renderPlayers();
+  window.scrollTo(0,0);
+}
 function setTab(name){
   curTab=name;
-  $("#dr-nav").querySelectorAll(".dr-item").forEach(b=>b.classList.toggle("on",b.dataset.n===name));
-  const ov=$("#ov"), cb=$("#curbar");
+  $("#dock").querySelectorAll(".dk").forEach(b=>b.classList.toggle("on",b.dataset.n===name));
+  const ov=$("#ov");
   if(name==="全部"){
-    ov.style.display="";cb.classList.add("hidden");
+    ov.style.display="";
     albumsBox.querySelectorAll(".album-card").forEach(s=>s.style.display="");
   }else{
-    ov.style.display="none";cb.classList.remove("hidden");
-    $("#curbar-name").textContent="当前分类："+name;
+    ov.style.display="none";
     albumsBox.querySelectorAll(".album-card").forEach(s=>s.style.display=(s.dataset.a===name)?"":"none");
   }
   const visible=[...albumsBox.querySelectorAll(".album-card")].some(s=>s.style.display!=="none");
@@ -344,7 +409,6 @@ function setTab(name){
     es.querySelector(".es-t").textContent="「"+name+"」还在整理中";
     es.classList.remove("hidden");
   }else es.classList.add("hidden");
-  closeDrawer();
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
@@ -479,6 +543,36 @@ document.addEventListener("keydown",e=>{
   else if(e.key==="ArrowLeft")step(-1);
   else if(e.key==="ArrowRight")step(1);
 });
+
+/* ---- 球员档案 ---- */
+function renderPlayers(){
+  const box=$("#players-list");
+  box.innerHTML='<div class="pl-grid">'+PLAYERS.map((p,i)=>
+    '<div class="pl-card glass" data-i="'+i+'" style="animation-delay:'+Math.min(i*40,500)+'ms"><div class="pl-avatar">'+p.num+'</div><div class="pl-name">'+esc(p.name||("球员"+p.num+"号"))+'</div><div class="pl-pos">'+esc(p.pos||"待录入")+'</div></div>'
+  ).join("")+'</div>';
+  box.querySelectorAll(".pl-card").forEach(el=>el.addEventListener("click",()=>openPlayer(+el.dataset.i)));
+}
+function playerPhotos(p){
+  const re=new RegExp("^p0*"+p.num+"[_-]","i");
+  return photos.filter(x=>x.a==="个人照"&&re.test(x.u.split("/").pop()));
+}
+function openPlayer(i){
+  const p=PLAYERS[i], box=$("#player-detail"), own=playerPhotos(p);
+  const nm=esc(p.name||("球员"+p.num+"号"));
+  let ph='<div class="state glass" style="padding:34px 20px;font-size:13px">TA的个人照整理中，敬请期待</div>';
+  if(own.length){
+    ph='<div class="album-card glass" style="margin-bottom:0"><div class="grid">'+own.map(x=>{
+      const idx=photos.indexOf(x);
+      return '<div class="ph" data-i="'+idx+'"><img loading="lazy" src="'+x.u+'" alt="" onload="this.classList.add(\'ok\')"></div>';
+    }).join("")+'</div></div>';
+  }
+  box.innerHTML='<div class="pl-detail-head glass"><div class="pl-avatar">'+p.num+'</div><div><div class="pl-nm">'+nm+'</div><div class="pl-pz">'+esc(p.pos||"场上位置待录入")+(p.grade?(" · "+esc(p.grade)):"")+'</div></div></div>'
+    +'<div class="pl-meta"><div class="m glass"><div class="k">球衣号码</div><div class="v">'+p.num+' 号</div></div><div class="m glass"><div class="k">场上位置</div><div class="v">'+esc(p.pos||"—")+'</div></div><div class="m glass"><div class="k">年级</div><div class="v">'+esc(p.grade||"—")+'</div></div><div class="m glass"><div class="k">个人照</div><div class="v">'+own.length+' 张</div></div></div>'
+    +'<div class="sec-title">'+nm+'的照片</div>'+ph;
+  box.querySelectorAll(".ph").forEach(el=>el.addEventListener("click",()=>openLb(+el.dataset.i)));
+  setView("player");
+}
+$("#btn-back").addEventListener("click",()=>setView("players"));
 
 /* ---- 启动 ---- */
 document.body.classList.add("locked");
