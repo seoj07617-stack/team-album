@@ -511,7 +511,9 @@ function render(albums,dates){
     }
     groups.sort((x,y)=>x.d===null?1:(y.d===null?-1:(x.d<y.d?1:-1)));
     for(const g of groups){
-      html+='<div class="date-head"><span class="dt">'+fmtDate(g.d)+'</span><span class="dn">'+g.fs.length+' 张</span></div><div class="grid">';
+      const soloUnknown=(groups.length===1&&g.d===null);
+      if(!soloUnknown)html+='<div class="date-head"><span class="dt">'+fmtDate(g.d)+'</span><span class="dn">'+g.fs.length+' 张</span></div>';
+      html+='<div class="grid">';
       for(const f of g.fs){
         const url=R2+"uploads/"+encodeURIComponent(a.name)+"/"+encodeURIComponent(f.name);
         const idx=photos.push({a:a.name,u:url,d:g.d})-1;
