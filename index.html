@@ -139,6 +139,9 @@ button{font-family:inherit}
 .album-head .chip svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .album-head .name{font-size:15px;font-weight:700;letter-spacing:-0.01em}
 .album-head .cnt{font-size:12px;color:var(--sub);margin-left:auto;font-variant-numeric:tabular-nums;background:rgba(120,110,200,.1);padding:4px 10px;border-radius:999px}
+.date-head{display:flex;align-items:baseline;gap:8px;margin:16px 6px 10px;padding-left:2px}
+.date-head .dt{font-size:14px;font-weight:700;letter-spacing:-0.01em;color:var(--ink)}
+.date-head .dn{font-size:11px;color:var(--sub);font-variant-numeric:tabular-nums}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px 9px 11px}
 @media(min-width:520px){.grid{grid-template-columns:repeat(4,1fr)}}
 .ph{position:relative;aspect-ratio:1/1;overflow:hidden;border-radius:9px;background:rgba(120,110,200,.12);cursor:pointer;animation:rise .5s var(--ease) both}
@@ -464,10 +467,17 @@ async function load(){
     $("#btn-retry").addEventListener("click",load);
     return;
   }
-  render(albums);
+  let dates=null;
+  try{const dm=await getJSON(R2+"dates.json?t="+Date.now());if(dm&&dm.dates)dates=dm.dates}catch(e){}
+  render(albums,dates);
 }
 function esc(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function render(albums){
+function fmtDate(d){
+  if(!d)return"日期未知";
+  const m=d.split("-");
+  return (+m[0])+"年"+(+m[1])+"月"+(+m[2])+"日";
+}
+function render(albums,dates){
   photos=[];counts={};albumsCache=albums;
   $("#ov").innerHTML="";$("#empty-state").classList.add("hidden");
   if(!albums.length){
@@ -491,13 +501,25 @@ function render(albums){
   let html="";
   for(let i=0;i<albums.length;i++){
     const a=albums[i], th=theme(a.name);
-    html+='<section class="album-card glass" data-a="'+esc(a.name)+'" style="animation-delay:'+(140+i*90)+'ms"><div class="album-head"><div class="chip" style="color:'+th.c+';background:'+th.bg+'">'+th.icon+'</div><span class="name">'+esc(a.name)+'</span><span class="cnt">'+a.files.length+' 张</span></div><div class="grid">';
+    html+='<section class="album-card glass" data-a="'+esc(a.name)+'" style="animation-delay:'+(140+i*90)+'ms"><div class="album-head"><div class="chip" style="color:'+th.c+';background:'+th.bg+'">'+th.icon+'</div><span class="name">'+esc(a.name)+'</span><span class="cnt">'+a.files.length+' 张</span></div>';
+    const dm=(dates&&dates[a.name])?dates[a.name]:{};
+    const groups=[],gidx={};
     for(const f of a.files){
-      const url=R2+"uploads/"+encodeURIComponent(a.name)+"/"+encodeURIComponent(f.name);
-      const idx=photos.push({a:a.name,u:url})-1;
-      html+='<div class="ph" data-i="'+idx+'" style="animation-delay:'+Math.min(idx*35,600)+'ms"><img loading="lazy" src="'+url+'" alt="" onload="this.classList.add(\'ok\')"></div>';
+      const dt=dm[f.name]||null;
+      if(!(dt in gidx)){gidx[dt]=groups.length;groups.push({d:dt,fs:[]})}
+      groups[gidx[dt]].fs.push(f);
     }
-    html+="</div></section>";
+    groups.sort((x,y)=>x.d===null?1:(y.d===null?-1:(x.d<y.d?1:-1)));
+    for(const g of groups){
+      html+='<div class="date-head"><span class="dt">'+fmtDate(g.d)+'</span><span class="dn">'+g.fs.length+' 张</span></div><div class="grid">';
+      for(const f of g.fs){
+        const url=R2+"uploads/"+encodeURIComponent(a.name)+"/"+encodeURIComponent(f.name);
+        const idx=photos.push({a:a.name,u:url,d:g.d})-1;
+        html+='<div class="ph" data-i="'+idx+'" style="animation-delay:'+Math.min(idx*35,600)+'ms"><img loading="lazy" src="'+url+'" alt="" onload="this.classList.add(\'ok\')"></div>';
+      }
+      html+="</div>";
+    }
+    html+="</section>";
   }
   albumsBox.innerHTML=html;
   albumsBox.querySelectorAll(".ph").forEach(el=>el.addEventListener("click",()=>openLb(+el.dataset.i)));
@@ -517,7 +539,7 @@ function openLb(i){
 function show(){
   const p=photos[cur];
   $("#lb-img").src=p.u;
-  $("#lb-cnt").textContent=p.a+" · "+(cur+1)+" / "+photos.length;
+  $("#lb-cnt").textContent=p.a+" · "+(p.d?fmtDate(p.d)+" · ":"")+(cur+1)+" / "+photos.length;
   [(cur+1)%photos.length,(cur-1+photos.length)%photos.length].forEach(k=>{new Image().src=photos[k].u});
 }
 function closeLb(){
